@@ -25,10 +25,6 @@ router.post('/login', function (req, res) {
   } else {
     res.redirect('login')
   }
-
-  console.log(req.body);
-
-
   res.redirect('/login')
 });
 

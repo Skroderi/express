@@ -4,11 +4,11 @@ var Schema = mongoose.Schema;
 var newsSchema = new Schema({
     title: {
         type: String,
-        required: true
+        required: [true, 'Tytuł jest wymagany!']
     },
     description: {
         type: String,
-        required: true
+        required: [true, 'Opis jest wymagany!']
     },
 
     created: {

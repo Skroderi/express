@@ -7,30 +7,48 @@ router.all('*', (req, res, next) => {
         res.redirect('login')
         return;
     }
-
     next()
 })
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
-
-
-    // console.log(req.session.admin);
-    // const newsData = new News({
-    //     title: 'Tytul testowy',
-    //     description: 'Opis'
-    // })
-    // newsData.save((err) => {
-    //     console.log(err);
-
-    // })
-    res.render('admin/index', {
-        title: 'Admin'
-    });
+router.get('/', function (req, res, ) {
+    News.find({}, (err, data) => {
+        res.render('admin/index', {
+            title: 'Admin',
+            data
+        });
+    })
 });
-router.get('/news/add', (req, res) => {
+router.get('/news/add', (req, res, ) => {
     res.render('admin/news-form', {
-        title: 'Dodaj news'
+        title: 'Dodaj news',
+        body: {},
+        errors: {},
     });
 });
+
+//dodawanie newso do bazy danych
+router.post('/news/add', (req, res) => {
+    const body = req.body;
+    const newsData = new News(body)
+    //przed save sprawdzamy poprawnosc danych
+    const errors = newsData.validateSync();
+    newsData.save((err) => {
+        if (err) {
+            res.render('admin/news-form', {
+                title: 'Dodaj news',
+                errors,
+                body
+            });
+            return;
+        }
+        res.redirect('/admin')
+    })
+});
+router.get('/news/delete/:id', (req, res, ) => {
+    News.findByIdAndDelete(req.params.id, (err) => {
+        res.redirect('/admin')
+    })
+});
+
 module.exports = router;
